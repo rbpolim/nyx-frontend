@@ -5,7 +5,12 @@ export function Footer() {
     <footer className="flex items-center justify-center p-4 border-t shadow-md">
       <p className="text-sm text-neutral-600">
         Criado com 🤎 por{" "}
-        <Link href="https://github.com/rbpolim">Rodrigo Polim</Link>
+        <Link
+          href="https://github.com/rbpolim"
+          className="underline text-muted-foreground hover:text-primary"
+        >
+          Rodrigo Polim
+        </Link>
       </p>
     </footer>
   );

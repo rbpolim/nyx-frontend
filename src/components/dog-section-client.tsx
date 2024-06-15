@@ -28,6 +28,8 @@ type BreedProps = {
   id: number;
   name: string;
   life_span: string;
+  breed_group: string;
+  bred_for: string;
 };
 
 type DogProps = {
@@ -44,7 +46,7 @@ export function DogSectionClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [rangeLifeSpan, setRangeLifeSpan] = useState<DogProps[]>([]);
   const [data, setData] = useState<DogProps[]>([]);
-  const [filtered, setFiltered] = useState<DogProps[]>([]);
+  const [filtered, setFiltered] = useState<DogProps[] | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,7 +61,7 @@ export function DogSectionClient() {
       const response = await axios.get(
         "https://api.thedogapi.com/v1/images/search?size=med&mime_types=jpg&format=json&has_breeds=true&order=RANDOM&page=0&limit=10&api_key=live_e6m9v6Q6Ohm5Pb9YlnvlSMeAJkt3YRSIR06mkSkT1MOzscAZYEI4ffjPwGCh31eH"
       );
-
+      console.log(response.data);
       setData(response.data);
     } catch (error) {
       console.error(error);
@@ -133,23 +135,33 @@ export function DogSectionClient() {
 
       {isLoading && <p>Loading...</p>}
 
-      {data && (
+      {data && !filtered && (
         <ul className="grid grid-cols-5 gap-6 mt-6">
           {data.map((dog) => (
             <li
               key={dog.id}
-              className="p-2 border shadow-md rounded-md bg-white"
+              className="p-2 border shadow-md rounded-lg bg-white"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 alt="random dog image"
                 src={dog.url}
-                className="w-full h-40 bg-cover rounded-md"
+                className="w-full h-32 bg-cover rounded-lg"
               />
               {dog.breeds.map((breed) => (
-                <div key={breed.id}>
-                  <p key={breed.id}>{breed.name}</p>
-                  <p>{breed.life_span}</p>
+                <div key={breed.id} className="mt-2 space-x-1 text-center">
+                  <p key={breed.id} className="text-sm font-medium">
+                    {breed.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {breed.life_span}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {breed.breed_group}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {breed.bred_for}
+                  </p>
                 </div>
               ))}
             </li>
@@ -162,13 +174,13 @@ export function DogSectionClient() {
           {filtered.map((dog) => (
             <li
               key={dog.id}
-              className="p-2 border shadow-md rounded-md bg-white"
+              className="p-2 border shadow-md rounded-lg bg-white"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 alt="random dog image"
                 src={dog.url}
-                className="w-full h-40 bg-cover rounded-md"
+                className="w-full h-40 bg-cover rounded-lg"
               />
               {dog.breeds.map((breed) => (
                 <div key={breed.id}>
