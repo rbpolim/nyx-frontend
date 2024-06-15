@@ -44,10 +44,10 @@ export function DogSectionClient() {
   // console.log(breeds);
 
   return (
-    <div className="">
-      <h1 className="text-2xl font-medium text-neutral-700 text-center">
+    <section>
+      <h2 className="text-2xl font-medium text-neutral-700 text-center">
         Look at these cute dogs! <span>🐶</span>
-      </h1>
+      </h2>
 
       {isLoading && <p>Loading...</p>}
 
@@ -60,8 +60,8 @@ export function DogSectionClient() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
+                alt="random dog image"
                 src={dog.url}
-                alt="dog"
                 className="w-full h-40 bg-cover rounded-md"
               />
               {dog.breeds.map((breed) => (
@@ -74,6 +74,6 @@ export function DogSectionClient() {
           ))}
         </ul>
       )}
-    </div>
+    </section>
   );
 }
