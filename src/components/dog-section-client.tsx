@@ -73,14 +73,14 @@ export function DogSectionClient({ data }: Props) {
 
   return (
     <section className="mt-4 mb-12">
-      <h2 className="text-lg lg:text-3xl font-bold text-neutral-700 text-center mb-6 mt-10">
+      <h2 className="text-xl lg:text-3xl font-bold text-neutral-600 text-center mb-6 mt-10">
         Look at these cute dogs! <span>🐶</span>
       </h2>
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-4 flex flex-col md:flex-row justify-center md:items-end md:gap-x-4"
+          className="flex flex-col md:flex-row justify-center md:items-end gap-4"
         >
           <FormField
             control={form.control}
@@ -116,7 +116,7 @@ export function DogSectionClient({ data }: Props) {
       </Form>
 
       {data && !dogsFiltered && (
-        <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-6">
+        <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
           {data.map((dog) => (
             <DogCard key={dog.id} data={dog} />
           ))}
@@ -124,7 +124,7 @@ export function DogSectionClient({ data }: Props) {
       )}
 
       {dogsFiltered && (
-        <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6 mt-6">
+        <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-4 mt-6">
           {dogsFiltered.map((dog) => (
             <DogCard key={dog.id} data={dog} />
           ))}
