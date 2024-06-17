@@ -1,15 +1,14 @@
 "use client";
 
-import { z } from "zod";
-import axios from "axios";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { z } from "zod";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,35 +22,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { DogCard } from "@/components/dog-card";
 
-type BreedProps = {
-  id: number;
-  name: string;
-  life_span: string;
-  breed_group: string;
-  bred_for: string;
-};
-
-type DogProps = {
-  id: string;
-  url: string;
-  breeds: BreedProps[];
-};
+import { DogProps } from "@/types";
 
 const formSchema = z.object({
-  range: z.string().min(1).max(50),
+  rangeLifeSpan: z.string().min(1).max(50),
 });
+
+const dogLifeSpans = [
+  "8 - 10 years",
+  "10 - 12 years",
+  "10 - 13 years",
+  "10 - 14 years",
+  "12 - 15 years",
+  "12 - 16 years",
+  "14 - 16 years",
+];
 
 export function DogSectionClient() {
   const [isLoading, setIsLoading] = useState(false);
-  const [rangeLifeSpan, setRangeLifeSpan] = useState<DogProps[]>([]);
-  const [data, setData] = useState<DogProps[]>([]);
-  const [filtered, setFiltered] = useState<DogProps[] | null>(null);
+  const [dogs, setDogs] = useState<DogProps[]>([]);
+  const [dogsFiltered, setDogsFiltered] = useState<DogProps[] | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      range: "",
+      rangeLifeSpan: "",
     },
   });
 
@@ -61,8 +58,7 @@ export function DogSectionClient() {
       const response = await axios.get(
         "https://api.thedogapi.com/v1/images/search?size=med&mime_types=jpg&format=json&has_breeds=true&order=RANDOM&page=0&limit=10&api_key=live_e6m9v6Q6Ohm5Pb9YlnvlSMeAJkt3YRSIR06mkSkT1MOzscAZYEI4ffjPwGCh31eH"
       );
-      console.log(response.data);
-      setData(response.data);
+      setDogs(response.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -74,39 +70,46 @@ export function DogSectionClient() {
     fetch();
   }, []);
 
-  const ranges = data.map((item: any) =>
-    item.breeds.map((breed: any) => breed.life_span)
-  );
-
   function onSubmit(values: z.infer<typeof formSchema>) {
-    setRangeLifeSpan(
-      data.filter((item) =>
-        item.breeds.some((breed) => breed.life_span === values.range)
-      )
-    );
-    setFiltered(rangeLifeSpan);
+    const filteredDogs = dogs.filter((dog) => {
+      const lifeSpan = dog.breeds[0].life_span;
+
+      const [min, max] = values.rangeLifeSpan.split(" - ");
+      const [minYears, maxYears] = [parseInt(min), parseInt(max)];
+
+      const [minLifeSpan, maxLifeSpan] = lifeSpan.split(" - ");
+      const [minLifeSpanYears, maxLifeSpanYears] = [
+        parseInt(minLifeSpan),
+        parseInt(maxLifeSpan),
+      ];
+
+      return minLifeSpanYears >= minYears && maxLifeSpanYears <= maxYears;
+    });
+
+    setDogsFiltered(filteredDogs);
   }
 
   return (
-    <section>
-      <h2 className="text-2xl font-medium text-neutral-700 text-center">
+    <section className="mt-4 mb-12">
+      <h2 className="text-lg lg:text-3xl font-bold text-neutral-700 text-center mb-6">
         Look at these cute dogs! <span>🐶</span>
       </h2>
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-2/3 space-y-4"
+          className="space-y-4 flex flex-col md:flex-row justify-center md:items-end md:gap-x-4"
         >
           <FormField
             control={form.control}
-            name="range"
+            name="rangeLifeSpan"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Range life span</FormLabel>
+                <FormLabel>Select the range of life span of the dog</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  disabled={isLoading}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -114,83 +117,45 @@ export function DogSectionClient() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {ranges.map((range) => (
-                      <SelectItem key={range} value={range}>
-                        {range}
+                    {dogLifeSpans.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <FormDescription>
-                  You can manage email addresses in your{" "}
-                  <Link href="/examples/forms">email settings</Link>.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" variant="outline" disabled={isLoading}>
+            Filter dogs
+          </Button>
         </form>
       </Form>
 
       {isLoading && <p>Loading...</p>}
 
-      {data && !filtered && (
-        <ul className="grid grid-cols-5 gap-6 mt-6">
-          {data.map((dog) => (
-            <li
-              key={dog.id}
-              className="p-2 border shadow-md rounded-lg bg-white"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt="random dog image"
-                src={dog.url}
-                className="w-full h-32 bg-cover rounded-lg"
-              />
-              {dog.breeds.map((breed) => (
-                <div key={breed.id} className="mt-2 space-x-1 text-center">
-                  <p key={breed.id} className="text-sm font-medium">
-                    {breed.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {breed.life_span}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {breed.breed_group}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {breed.bred_for}
-                  </p>
-                </div>
-              ))}
-            </li>
+      {dogs && !dogsFiltered && (
+        <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-6">
+          {dogs.map((dog) => (
+            <DogCard key={dog.id} data={dog} />
           ))}
         </ul>
       )}
 
-      {filtered && (
-        <ul className="grid grid-cols-5 gap-6 mt-6">
-          {filtered.map((dog) => (
-            <li
-              key={dog.id}
-              className="p-2 border shadow-md rounded-lg bg-white"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt="random dog image"
-                src={dog.url}
-                className="w-full h-40 bg-cover rounded-lg"
-              />
-              {dog.breeds.map((breed) => (
-                <div key={breed.id}>
-                  <p key={breed.id}>{breed.name}</p>
-                  <p>{breed.life_span}</p>
-                </div>
-              ))}
-            </li>
+      {dogsFiltered && (
+        <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6 mt-6">
+          {dogsFiltered.map((dog) => (
+            <DogCard key={dog.id} data={dog} />
           ))}
         </ul>
+      )}
+
+      {dogsFiltered && dogsFiltered.length === 0 && (
+        <p className="text-center mt-6 text-muted-foreground">
+          No dogs found with the selected range of life span 😭
+        </p>
       )}
     </section>
   );
