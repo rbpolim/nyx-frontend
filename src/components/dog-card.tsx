@@ -8,7 +8,7 @@ type Props = {
 
 export function DogCard({ data }: Props) {
   return (
-    <li key={data.id} className="p-2 border shadow-md rounded-lg bg-white">
+    <li key={data.id} className="p-2 border shadow-sm rounded-2xl bg-white">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         alt="random dog image"
