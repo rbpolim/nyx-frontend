@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { z } from "zod";
 
 import {
@@ -23,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { DogCard } from "@/components/dog-card";
-
 import { DogProps } from "@/types";
 
 const formSchema = z.object({
@@ -40,9 +38,11 @@ const dogLifeSpans = [
   "14 - 16 years",
 ];
 
-export function DogSectionClient() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [dogs, setDogs] = useState<DogProps[]>([]);
+type Props = {
+  data: DogProps[];
+};
+
+export function DogSectionClient({ data }: Props) {
   const [dogsFiltered, setDogsFiltered] = useState<DogProps[] | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,26 +52,8 @@ export function DogSectionClient() {
     },
   });
 
-  async function fetch() {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(
-        "https://api.thedogapi.com/v1/images/search?size=med&mime_types=jpg&format=json&has_breeds=true&order=RANDOM&page=0&limit=10&api_key=live_e6m9v6Q6Ohm5Pb9YlnvlSMeAJkt3YRSIR06mkSkT1MOzscAZYEI4ffjPwGCh31eH"
-      );
-      setDogs(response.data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetch();
-  }, []);
-
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const filteredDogs = dogs.filter((dog) => {
+    const filteredDogs = data.filter((dog) => {
       const lifeSpan = dog.breeds[0].life_span;
 
       const [min, max] = values.rangeLifeSpan.split(" - ");
@@ -109,7 +91,6 @@ export function DogSectionClient() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  disabled={isLoading}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -128,17 +109,15 @@ export function DogSectionClient() {
               </FormItem>
             )}
           />
-          <Button type="submit" variant="outline" disabled={isLoading}>
+          <Button type="submit" variant="outline">
             Filter dogs
           </Button>
         </form>
       </Form>
 
-      {isLoading && <p>Loading...</p>}
-
-      {dogs && !dogsFiltered && (
+      {data && !dogsFiltered && (
         <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-6">
-          {dogs.map((dog) => (
+          {data.map((dog) => (
             <DogCard key={dog.id} data={dog} />
           ))}
         </ul>
