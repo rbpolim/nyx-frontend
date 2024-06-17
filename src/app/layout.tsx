@@ -9,8 +9,8 @@ import "./globals.css";
 const montSerrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Desafio Frontend nyx 2024",
-  description: "Desafio Frontend nyx 2024",
+  title: "Desafio Frontend Nyx 2024",
+  description: "Desafio Frontend Nyx 2024",
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={montSerrat.className}>
-        <div className="min-h-screen flex flex-col bg-neutral-100">
+        <div className="min-h-screen flex flex-col bg-zinc-100">
           <Header />
           <div className="flex-1">{children}</div>
           <Footer />

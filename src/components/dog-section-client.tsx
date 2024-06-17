@@ -73,7 +73,7 @@ export function DogSectionClient({ data }: Props) {
 
   return (
     <section className="mt-4 mb-12">
-      <h2 className="text-lg lg:text-3xl font-bold text-neutral-700 text-center mb-6">
+      <h2 className="text-lg lg:text-3xl font-bold text-neutral-700 text-center mb-6 mt-10">
         Look at these cute dogs! <span>🐶</span>
       </h2>
 

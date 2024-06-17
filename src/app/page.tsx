@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
     <div className="h-full w-full">
-      <div className="max-w-5xl mx-auto h-full">
+      <div className="max-w-5xl mx-auto h-full px-4">
         <DogSectionClient data={dogs} />
       </div>
     </div>
