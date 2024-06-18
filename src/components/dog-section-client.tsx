@@ -73,10 +73,9 @@ export function DogSectionClient({ data }: Props) {
 
   return (
     <section className="mt-4 mb-12">
-      <h2 className="text-xl lg:text-3xl font-bold text-neutral-600 text-center mb-6 mt-10">
+      <h1 className="text-xl lg:text-3xl font-bold text-neutral-600 text-center mb-6 mt-10">
         Look at these cute dogs! <span>🐶</span>
-      </h2>
-
+      </h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -114,7 +113,6 @@ export function DogSectionClient({ data }: Props) {
           </Button>
         </form>
       </Form>
-
       {data && !dogsFiltered && (
         <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
           {data.map((dog) => (
@@ -122,7 +120,6 @@ export function DogSectionClient({ data }: Props) {
           ))}
         </ul>
       )}
-
       {dogsFiltered && (
         <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-4 mt-6">
           {dogsFiltered.map((dog) => (
@@ -130,7 +127,6 @@ export function DogSectionClient({ data }: Props) {
           ))}
         </ul>
       )}
-
       {dogsFiltered && dogsFiltered.length === 0 && (
         <p className="text-center mt-6 text-muted-foreground">
           No dogs found with the selected range of life span 😭

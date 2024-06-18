@@ -13,13 +13,18 @@ Projeto desenvolvido para o processo seletivo da Nyx 2024. Uma landing page com 
 - Zod Validation
 - React Hook Form
 - Shadcn/ui
+- Vercel (Deploy)
 
 ## Features
 
-- Padronização de commits (feat/fix/chore/style/docs);
-- Lista de cachorros;
-- Poder filtrar por expectativa de vida;
+- Lista de cachorros com imagem, nome e expectativa de vida;
+- Poder filtrar cachorros por expectativa de vida;
 - Integração com a API [The Dog API](https://thedogapi.com/);
+- Validação de formulário com Zod;
+- Responsividade para mobile, tablet e desktop;
+- Estrutura hierárquica de HTML, semântica e acessível;
+- Tratamento de erros pela API;
+- Padronização de commits (feat/fix/chore/style/docs);
 
 ## Demo
 

@@ -1,5 +1,4 @@
 import { fetchDogs } from "@/actions/fetch-dogs";
-
 import { DogSectionClient } from "@/components/dog-section-client";
 
 export default async function Home() {
@@ -8,7 +7,7 @@ export default async function Home() {
   if (!dogs) {
     return (
       <p className="text-center text-rose-700 text-lg pt-20">
-        Something went wrong. Please try again later.
+        Hey, something went wrong! Please try again later. 😢
       </p>
     );
   }
